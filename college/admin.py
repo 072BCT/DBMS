@@ -25,7 +25,6 @@ class AdminSite(AdminSite):
 
 
 
-
 admin.site = AdminSite()
 admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
