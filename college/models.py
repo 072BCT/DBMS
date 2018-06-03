@@ -1,6 +1,6 @@
 import datetime
 from django.db import models
-
+from datetime import date
 
 # pw - dbms1234
 
@@ -32,24 +32,31 @@ class Semester(models.Model):
         return self.name
 
 
-class Teacher(models.Model):
-    # programme = models.ForeignKey(Programme, on_delete= models.PROTECT)
-    name = models.CharField(max_length=40)
-    phone = models.CharField(max_length=20)
-    email = models.EmailField(max_length=30)
-    affiliated_institute = models.CharField(max_length=10)
-    teaching_experience_years = models.IntegerField(default='1')
-
+class HumanResource(models.Model):
+    name = models.CharField(max_length=40, default="", )
+    phone = models.CharField(max_length=20, default="")
+    email = models.EmailField(max_length=30, default="")
+    affiliated_institute = models.CharField(max_length=10, default="PUL")
+    started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"))
     upper_degree = models.CharField(max_length=30, choices=Degree_Choices, default='MSc')
     aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
+
+    class Meta:
+        abstract = True
+
+
+class Teacher(HumanResource):
+    def __str__(self):
+        return self.name
 
 
 class Subject(models.Model):
     name = models.CharField(max_length=40, blank=True, null=True)
+    program_code = models.CharField(max_length=40, blank=True, null=True)
     program = models.ForeignKey(Programme, on_delete=models.CASCADE, null=True)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
-    subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
-    program_code = models.CharField(max_length=40, blank=True, null=True)
+    subject_teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING, null=True)
+    subject_teacher_teaching_experience_years = models.CharField(max_length=3, blank=True, null=True)
     int_marks = models.IntegerField(default="4")
     int_marks = models.IntegerField(default="40")
     ext_marks = models.IntegerField(default="60")
@@ -60,7 +67,7 @@ class Subject(models.Model):
     # return self.int_marks + self.ext_marks
 
     def __str__(self):
-        return self.name + "  :  " + self.program.name + " - " + self.semester.name
+        return self.program.name + " - " + self.semester.name + "  :  " + self.name
 
 
 class Topic(models.Model):
@@ -68,12 +75,5 @@ class Topic(models.Model):
     name = models.CharField(max_length=40)
 
 
-class Expert(models.Model):
-    # programme = models.ForeignKey(Programme, on_delete= models.PROTECT)
-    topic = models.ForeignKey(Topic, on_delete=models.PROTECT)
-    name = models.CharField(max_length=40)
-    phone = models.CharField(max_length=20)
-    email = models.EmailField(max_length=30)
-    aff_campus = models.CharField(max_length=10)
-    upper_degree = models.CharField(max_length=30, choices=Degree_Choices, default='MSc')
-    aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
+class Expert(HumanResource):
+    topic = models.ManyToManyField(Topic, default="")
