@@ -46,6 +46,8 @@ class HumanResource(models.Model):
 
 
 class Teacher(HumanResource):
+    int_marks = models.IntegerField(default="40")
+
     def __str__(self):
         return self.name
 
@@ -56,10 +58,9 @@ class Subject(models.Model):
     program = models.ForeignKey(Programme, on_delete=models.CASCADE, null=True)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
     subject_teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING, null=True, blank=True)
-    subject_teacher_teaching_experience_years = models.CharField(max_length=4, blank=True , null=True)
+    subject_teacher_teaching_experience_years = models.CharField(max_length=4, blank=True, null=True)
     int_marks = models.IntegerField(default="4")
     int_marks = models.IntegerField(default="40")
-    ext_marks = models.IntegerField(default="60")
 
     # total_marks = int_marks + ext_marks
 
@@ -74,6 +75,12 @@ class Topic(models.Model):
     course = models.ForeignKey(Subject, on_delete=models.PROTECT)
     name = models.CharField(max_length=40)
 
+    def __str__(self):
+        return self.name
+
 
 class Expert(HumanResource):
-    topic = models.ManyToManyField(Topic, default="")
+    topic = models.ManyToManyField(Topic)
+
+    def __str__(self):
+        return self.name
