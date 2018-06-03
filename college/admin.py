@@ -15,13 +15,13 @@ class AdminSite(AdminSite):
     site_url = None
 
     # Text to put at the end of each page's <title>.
-    site_title = gettext_lazy('IOE')
+    site_title = gettext_lazy('MSc Teachers & Experts Database - IOE, DOECE')
 
     # Text to put in each page's <h1>.
-    site_header = gettext_lazy('IOE PUL')
+    site_header = gettext_lazy('MSc Teachers & Experts Database')
 
     # Text to put at the top of the admin index page.
-    index_title = gettext_lazy('IOE PUL MSC')
+    index_title = gettext_lazy('Welcome!')
 
 
 
@@ -33,8 +33,11 @@ admin.site.register(Group, GroupAdmin)
 
 class ExpertAdmin(ModelAdmin):
     list_filter = ('affiliated_institute', 'upper_degree', 'aff_type')
-    list_display = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', )
-    search_fields = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type')
+    list_display = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'get_topics')
+    search_fields = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'topic__name')
+
+    def get_topics(self, obj):
+        return ",\n".join([p.name for p in obj.topic.all()])
 
     pass
 
