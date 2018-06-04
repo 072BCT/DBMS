@@ -11,7 +11,6 @@ from .models import *
 
 
 class AdminSite(AdminSite):
-
     site_url = None
 
     # Text to put at the end of each page's <title>.
@@ -22,7 +21,6 @@ class AdminSite(AdminSite):
 
     # Text to put at the top of the admin index page.
     index_title = gettext_lazy('Welcome!')
-
 
 
 admin.site = AdminSite()
@@ -46,10 +44,9 @@ class TopicAdmin(ModelAdmin):
 
 
 class TeacherAdmin(ModelAdmin):
-
-    list_filter = ( 'affiliated_institute','upper_degree', 'aff_type')
-    list_display = ('name', 'phone', 'email', 'affiliated_institute','upper_degree', 'aff_type' )
-    search_fields = ('name', 'phone', 'email', 'affiliated_institute','upper_degree', 'aff_type')
+    list_filter = ('affiliated_institute', 'upper_degree', 'aff_type')
+    list_display = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type')
+    search_fields = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type')
 
     pass
 

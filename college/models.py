@@ -1,6 +1,6 @@
 import datetime
+
 from django.db import models
-from datetime import date
 
 # pw - dbms1234
 
@@ -56,7 +56,6 @@ class HumanResource(models.Model):
 
 
 class Teacher(HumanResource):
-
     teacher_id = models.CharField(max_length=20, default=" ", blank=True, null=False)
 
     def __str__(self):
