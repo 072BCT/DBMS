@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+
+college/__pycache__/
+mscteachers/__pycache__/
+temp_python_spreadsheet.xlsx
+/college/migrations/
