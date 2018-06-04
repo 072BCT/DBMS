@@ -62,6 +62,9 @@ class Subject(models.Model):
     int_marks = models.IntegerField(default="4")
     int_marks = models.IntegerField(default="40")
 
+    def get_subjet_teacher(self):
+        return self.subject_teacher.name
+
     # total_marks = int_marks + ext_marks
 
     # def total_marks(self):

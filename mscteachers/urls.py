@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from college import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('export/', views.generate_xlsx),
     path('', admin.site.urls),
 ]
