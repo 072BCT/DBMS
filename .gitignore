@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/dataSources.local.xml
+.idea/dataSources/
+.idea/workspace.xml
+college/__pycache__/
+mscteachers/__pycache__/
+
+temp_python_spreadsheet.xlsx
+/college/migrations/
