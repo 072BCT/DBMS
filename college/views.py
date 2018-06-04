@@ -20,11 +20,9 @@ def generate_xlsx(context):
     col = 2
 
     for Subject.name in Subject.objects.all():
-        sheet[colnum_string(col) + str(row)] = str(Subject.subject_teacher)
+        sheet[colnum_string(col) + str(row)] = str(Subject.name.name)
 
-        results = Teacher.objects.filter(pk = str(Subject.get_subjet_teacher(Subject)))
-        for teacher in results:
-            sheet[colnum_string(col + 3) + str(row)] = str(teacher)
+        # TODO add other methods to dump in xlsx here
 
         row += 1
 
