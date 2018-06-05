@@ -9,7 +9,12 @@ from openpyxl import Workbook
 from .models import Subject
 
 
-def generate_xlsx(context):
+def generate_xlsx(request):
+    if not request.user.is_superuser:
+        return HttpResponse('Sorry! You need to be authorized to access this link.'
+                            + "<a href='../'>" + 'Login here.' +
+                            "</a> <br> <br> <br> If you think this is a mistake contact WebAdmin.")
+
     file_path = os.path.join(os.path.dirname(os.path.realpath(__name__)), 'python_spreadsheet.xlsx')
     output_path = os.path.join(os.path.dirname(os.path.realpath(__name__)), 'temp_python_spreadsheet.xlsx')
     wb = Workbook()
