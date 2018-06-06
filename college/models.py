@@ -57,6 +57,7 @@ class HumanResource(models.Model):
 
 class Teacher(HumanResource):
     teacher_id = models.CharField(max_length=20, default=" ", blank=True, null=False)
+    known_subjects = models.ManyToManyField('Subject')
 
     def __str__(self):
         return self.name
