@@ -93,7 +93,7 @@ class Subject(models.Model):
 
 
 class Topic(models.Model):
-    course = models.ForeignKey(Subject, on_delete=models.PROTECT)
+    subject = models.ForeignKey(Subject, on_delete=models.PROTECT)
     name = models.CharField(max_length=40)
 
     def __str__(self):
