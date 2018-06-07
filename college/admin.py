@@ -36,8 +36,6 @@ class ExpertAdmin(ModelAdmin):
     def get_topics(self, obj):
         return ",\n".join([p.name for p in obj.topic.all()])
 
-    get_topics.short_description = "Topics Known"
-
     pass
 
 
@@ -47,14 +45,8 @@ class TopicAdmin(ModelAdmin):
 
 class TeacherAdmin(ModelAdmin):
     list_filter = ('affiliated_institute', 'upper_degree', 'aff_type')
-    list_display = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'get_known_subjects')
-    search_fields = (
-    'name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'known_subjects__name')
-
-    def get_known_subjects(self, obj):
-        return ",\n".join([p.name for p in obj.known_subjects.all()])
-
-    get_known_subjects.short_description = "Subjects Known"
+    list_display = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type')
+    search_fields = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type')
 
     pass
 
