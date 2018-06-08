@@ -23,7 +23,8 @@ from django.conf.urls import include, url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('export/', views.generate_xlsx),
+    url(r'^.*export.*$', views.generate_xlsx),
+
     path('', admin.site.urls),
 ]
 
