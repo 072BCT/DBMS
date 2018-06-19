@@ -35,13 +35,15 @@ def generate_xlsx(request):
         sheet[colnum_string(col + 4) + str(row)] = str(subjects.subject_teacher.teacher_id)
         #
         # # teacher experience required
-        sheet[colnum_string(col + 5) + str(row)] = str(subjects.subject_teacher.name)
+        sheet[colnum_string(col + 5) + str(row)] = str(subjects.subject_teacher.full_name())
         #
         sheet[colnum_string(col + 6) + str(row)] = str(subjects.subject_teacher.get_teacher_experience_years())
         #
         sheet[colnum_string(col + 7) + str(row)] = str(subjects.subject_teacher_teaching_experience_years)
         #
-        sheet[colnum_string(col + 9) + str(row)] = str(subjects.subject_teacher.phone)
+        sheet[colnum_string(col + 8) + str(row)] = str(subjects.subject_teacher.office_phone)
+        #
+        sheet[colnum_string(col + 9) + str(row)] = str(subjects.subject_teacher.mobile_phone)
         #
         sheet[colnum_string(col + 10) + str(row)] = str(subjects.subject_teacher.email)
         #

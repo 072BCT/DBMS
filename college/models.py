@@ -7,6 +7,7 @@ from django.db import models
 
 Degree_Choices = {('PhD', 'PhD'), ('MSc', 'MSc'), ('Bachelors', 'Bachelors'), ('Diploma', 'Diploma')}
 Affiliation_Choices = {('Permanent', 'Permanent'), ('Contract', 'Contract'), ('Visiting', 'Visiting')}
+Position_Choices = {('Prof Dr.', 'Prof Dr'), ('Dr.', 'Dr')}
 
 
 class Programme(models.Model):
@@ -43,27 +44,31 @@ class Semester(models.Model):
 
 
 class HumanResource(models.Model):
-    name = models.CharField(max_length=40, default="", )
-    phone = models.CharField(max_length=20, default="", blank=True)
-    email = models.EmailField(max_length=30, default="", blank=True)
-    affiliated_institute = models.CharField(max_length=10, default="PUL")
-    started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"), blank=True)
+    first_name = models.CharField(max_length=40,)
+    middle_name = models.CharField(max_length=40, blank=True)
+    last_name = models.CharField(max_length=40, )
+    salutation = models.CharField(max_length=40, choices=Position_Choices, blank=True)
+    mobile_phone = models.CharField(max_length=20, blank=True)
+    home_phone = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(max_length=30, blank=True)
     upper_degree = models.CharField(max_length=30, choices=Degree_Choices, default='MSc')
-    aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
 
     class Meta:
         abstract = True
 
-
-class Teacher(HumanResource):
-    teacher_id = models.CharField(max_length=20, default=" ", blank=True, null=False)
-    known_subjects = models.ManyToManyField('Subject')
+    def full_name(self):
+        return str(self.salutation + ' ' + self.first_name + ' ' + self.middle_name + ' ' + self.last_name)
 
     def __str__(self):
-        return self.name
+        return self.full_name()
 
-    def get_name(self):
-        return str(self.name)
+
+class Teacher(HumanResource):
+    teacher_id = models.CharField(max_length=20, blank=True, null=False)
+    known_subjects = models.ManyToManyField('Subject', blank=True)
+    aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
+    affiliated_institute = models.CharField(max_length=10, default="PUL")
+    started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"), blank=True)
 
     def get_teacher_id(self):
         return str(self.teacher_id)
@@ -77,6 +82,7 @@ class Teacher(HumanResource):
 
 class Subject(models.Model):
     name = models.CharField(max_length=40, blank=True, null=True)
+    elective = models.BooleanField(default=0)
     program_code = models.CharField(max_length=40, blank=True, default=" ")
     program = models.ForeignKey(Programme, on_delete=models.CASCADE, null=True)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
@@ -93,7 +99,6 @@ class Subject(models.Model):
 
 
 class Topic(models.Model):
-    course = models.ForeignKey(Subject, on_delete=models.PROTECT)
     name = models.CharField(max_length=40)
 
     def __str__(self):
@@ -101,7 +106,5 @@ class Topic(models.Model):
 
 
 class Expert(HumanResource):
+    organization = models.CharField(max_length=10, blank=True)
     topic = models.ManyToManyField(Topic)
-
-    def __str__(self):
-        return self.name

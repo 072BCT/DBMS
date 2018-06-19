@@ -29,9 +29,11 @@ admin.site.register(Group, GroupAdmin)
 
 
 class ExpertAdmin(ModelAdmin):
-    list_filter = ('affiliated_institute', 'upper_degree', 'aff_type')
-    list_display = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'get_topics')
-    search_fields = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'topic__name')
+    list_filter = ('organization', 'upper_degree',)
+    list_display = ('full_name', 'mobile_phone', 'email', 'organization', 'upper_degree', 'get_topics')
+    search_fields = (
+        'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email', 'organization',
+        'upper_degree', 'topic__name')
 
     def get_topics(self, obj):
         return ",\n".join([p.name for p in obj.topic.all()])
@@ -47,9 +49,11 @@ class TopicAdmin(ModelAdmin):
 
 class TeacherAdmin(ModelAdmin):
     list_filter = ('affiliated_institute', 'upper_degree', 'aff_type')
-    list_display = ('name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'get_known_subjects')
+    list_display = (
+        'full_name', 'mobile_phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'get_known_subjects')
     search_fields = (
-    'name', 'phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'known_subjects__name')
+        'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email', 'affiliated_institute',
+        'upper_degree', 'aff_type', 'known_subjects__name')
 
     def get_known_subjects(self, obj):
         return ",\n".join([p.name for p in obj.known_subjects.all()])
@@ -57,12 +61,14 @@ class TeacherAdmin(ModelAdmin):
     get_known_subjects.short_description = "Subjects Known"
 
     pass
+    pass
 
 
 class SubjectAdmin(ModelAdmin):
-    list_filter = ('program', 'semester')
-    list_display = ('name', 'program', 'semester', 'subject_teacher', 'subject_teacher_teaching_experience_years')
-    search_fields = ('name',)
+    list_filter = ('program', 'semester', 'elective')
+    list_display = (
+        'name', 'program', 'semester', 'subject_teacher', 'subject_teacher_teaching_experience_years', 'elective')
+    search_fields = ('name', 'subject_teacher__first_name', 'subject_teacher_teaching_experience_years',)
     pass
 
 
