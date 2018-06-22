@@ -66,6 +66,9 @@ class HumanResource(models.Model):
 class AffiliatedInstitute(models.Model):
     institute_name = models.CharField(max_length=20, blank=True)
     code = models.CharField(max_length=20, blank=True)
+    address = models.CharField(max_length=40, blank=True)
+    office_phone = models.CharField(max_length=20, blank=True)
+    office_email =  models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return self.institute_name
@@ -114,7 +117,7 @@ class AssignSubjectTeacher(models.Model):
     subject_teacher_teaching_experience_years = models.CharField(max_length=4, blank=True)
 
     def __str__(self):
-        return self.batch.year + " - " + self.batch.programme.name + self.semester.name + "  :  " + self.subject_teacher.first_name + " , "+self.subject.name
+        return self.batch.year + " - " + self.batch.programme.name + self.semester.name + "  :  " + self.subject_teacher.first_name + " , " + self.subject.name
 
 
 class Topic(models.Model):

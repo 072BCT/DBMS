@@ -6,7 +6,7 @@ from django.http import HttpResponse
 # Create your views here.
 from openpyxl import Workbook
 
-from .models import Subject
+from .models import AssignSubjectTeacher
 
 
 def generate_xlsx(request):
@@ -27,31 +27,31 @@ def generate_xlsx(request):
 
     sheet['M1'] = datetime.today().strftime('%Y-%m-%d')
 
-    for subjects in Subject.objects.all():
-        sheet[colnum_string(col + 1) + str(row)] = str(subjects.program_code)
-        sheet[colnum_string(col + 2) + str(row)] = str(subjects.name)
+    for subjectteachers in AssignSubjectTeacher.objects.all():
+        sheet[colnum_string(col + 1) + str(row)] = str(subjectteachers.subject.subject_code)
+        sheet[colnum_string(col + 2) + str(row)] = str(subjectteachers.subject.name)
         # teacher id
-        sheet[colnum_string(col + 3) + str(row)] = str(subjects.semester.getyearpart())
-        sheet[colnum_string(col + 4) + str(row)] = str(subjects.subject_teacher.teacher_id)
+        sheet[colnum_string(col + 3) + str(row)] = str(subjectteachers.semester.getyearpart())
+        sheet[colnum_string(col + 4) + str(row)] = str(subjectteachers.subject_teacher.teacher_id)
         #
         # # teacher experience required
-        sheet[colnum_string(col + 5) + str(row)] = str(subjects.subject_teacher.full_name())
+        sheet[colnum_string(col + 5) + str(row)] = str(subjectteachers.subject_teacher.full_name())
         #
-        sheet[colnum_string(col + 6) + str(row)] = str(subjects.subject_teacher.get_teacher_experience_years())
+        sheet[colnum_string(col + 6) + str(row)] = str(subjectteachers.subject_teacher.get_teacher_experience_years())
         #
-        sheet[colnum_string(col + 7) + str(row)] = str(subjects.subject_teacher_teaching_experience_years)
+        sheet[colnum_string(col + 7) + str(row)] = str(subjectteachers.subject_teacher_teaching_experience_years)
         #
-        sheet[colnum_string(col + 8) + str(row)] = str(subjects.subject_teacher.office_phone)
+        sheet[colnum_string(col + 8) + str(row)] = str(subjectteachers.subject_teacher.home_phone)
         #
-        sheet[colnum_string(col + 9) + str(row)] = str(subjects.subject_teacher.mobile_phone)
+        sheet[colnum_string(col + 9) + str(row)] = str(subjectteachers.subject_teacher.mobile_phone)
         #
-        sheet[colnum_string(col + 10) + str(row)] = str(subjects.subject_teacher.email)
+        sheet[colnum_string(col + 10) + str(row)] = str(subjectteachers.subject_teacher.email)
         #
-        sheet[colnum_string(col + 11) + str(row)] = str(subjects.subject_teacher.affiliated_institute)
+        sheet[colnum_string(col + 11) + str(row)] = str(subjectteachers.subject_teacher.affiliated_institute)
         #
-        sheet[colnum_string(col + 12) + str(row)] = str(subjects.subject_teacher.upper_degree)
+        sheet[colnum_string(col + 12) + str(row)] = str(subjectteachers.subject_teacher.upper_degree)
         #
-        sheet[colnum_string(col + 13) + str(row)] = str(subjects.subject_teacher.aff_type)
+        sheet[colnum_string(col + 13) + str(row)] = str(subjectteachers.subject_teacher.aff_type)
 
         # TODO add other methods to dump in xlsx here
 
