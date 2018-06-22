@@ -82,7 +82,8 @@ class SubjectTeacherAdmin(ModelAdmin):
         'batch__year', 'batch__programme__name', 'semester__name', 'subject_teacher__first_name', 'subject__name')
     list_display = (
         'batch', 'semester', 'subject_teacher', 'subject')
-    search_fields = ('batch', 'semester', 'subject_teacher', 'subject')
+    search_fields = (
+    'batch__year', 'batch__programme__name', 'semester__name', 'subject_teacher__first_name', 'subject__name')
 
     pass
 
@@ -101,4 +102,3 @@ admin.site.register(Batch, BatchAdmin)
 admin.site.register(Programme)
 admin.site.register(Semester, SemesterAdmin)
 admin.site.register(AffiliatedInstitute)
-
