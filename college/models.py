@@ -44,9 +44,9 @@ class Semester(models.Model):
 
 
 class HumanResource(models.Model):
-    first_name = models.CharField(max_length=40, )
+    first_name = models.CharField(max_length=40, blank=True)
     middle_name = models.CharField(max_length=40, blank=True)
-    last_name = models.CharField(max_length=40, )
+    last_name = models.CharField(max_length=40, blank=True)
     salutation = models.CharField(max_length=40, choices=Position_Choices, blank=True)
     mobile_phone = models.CharField(max_length=20, blank=True)
     home_phone = models.CharField(max_length=20, blank=True)
@@ -114,5 +114,5 @@ class Topic(models.Model):
 
 
 class Expert(HumanResource):
-    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.DO_NOTHING)
+    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.DO_NOTHING, null=True)
     topic = models.ManyToManyField(Topic)
