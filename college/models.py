@@ -44,10 +44,10 @@ class Semester(models.Model):
 
 
 class HumanResource(models.Model):
+    salutation = models.CharField(max_length=40, choices=Position_Choices, blank=True)
     first_name = models.CharField(max_length=40, blank=True)
     middle_name = models.CharField(max_length=40, blank=True)
     last_name = models.CharField(max_length=40, blank=True)
-    salutation = models.CharField(max_length=40, choices=Position_Choices, blank=True)
     mobile_phone = models.CharField(max_length=20, blank=True)
     home_phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(max_length=30, blank=True)
@@ -91,19 +91,30 @@ class Teacher(HumanResource):
 class Subject(models.Model):
     name = models.CharField(max_length=40, blank=True, null=True)
     elective = models.BooleanField(default=0)
-    program_code = models.CharField(max_length=40, blank=True, default=" ")
-    program = models.ForeignKey(Programme, on_delete=models.CASCADE, null=True)
-    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
-    subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    subject_teacher_teaching_experience_years = models.CharField(max_length=4, blank=True)
-    int_marks = models.IntegerField(default="4")
-    int_marks = models.IntegerField(default="40")
+    subject_code = models.CharField(max_length=40, blank=True, default=" ")
+    # program = models.ForeignKey(Programme, on_delete=models.CASCADE, null=True)
+    # semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+    # subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    credit = models.IntegerField(default="4")
+    internal_marks = models.IntegerField(default="40")
+    external_marks = models.IntegerField(default="60")
 
     # def total_marks(self):
     # return self.int_marks + self.ext_marks
 
     def __str__(self):
-        return self.program.name + " - " + self.semester.name + "  :  " + self.name
+        return self.name
+
+
+class AssignSubjectTeacher(models.Model):
+    batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+    subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject_teacher_teaching_experience_years = models.CharField(max_length=4, blank=True)
+
+    def __str__(self):
+        return self.batch.year + " - " + self.batch.programme.name + self.semester.name + "  :  " + self.subject_teacher.first_name + " , "+self.subject.name
 
 
 class Topic(models.Model):

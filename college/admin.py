@@ -30,7 +30,7 @@ admin.site.register(Group, GroupAdmin)
 
 class ExpertAdmin(ModelAdmin):
     list_display = (
-        'full_name', 'mobile_phone', 'email', 'organization', 'upper_degree',  'get_topics')
+        'full_name', 'mobile_phone', 'email', 'organization', 'upper_degree', 'get_topics')
     list_filter = ('organization__institute_name', 'upper_degree',)
     search_fields = (
         'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email', 'organization__institute_name',
@@ -65,17 +65,40 @@ class TeacherAdmin(ModelAdmin):
 
 
 class SubjectAdmin(ModelAdmin):
-    list_filter = ('program', 'semester', 'elective')
+    list_filter = ('elective',)
     list_display = (
-        'name', 'program', 'semester', 'subject_teacher', 'subject_teacher_teaching_experience_years', 'elective')
-    search_fields = ('name', 'subject_teacher__first_name', 'subject_teacher_teaching_experience_years',)
+        'name', 'internal_marks', 'elective')
+    search_fields = ('name',)
     pass
 
 
-admin.site.register(Expert, ExpertAdmin)
-admin.site.register(Topic, TopicAdmin)
+class SemesterAdmin(ModelAdmin):
+    pass
+
+
+class SubjectTeacherAdmin(ModelAdmin):
+    save_as = True
+    list_filter = (
+        'batch__year', 'batch__programme__name', 'semester__name', 'subject_teacher__first_name', 'subject__name')
+    list_display = (
+        'batch', 'semester', 'subject_teacher', 'subject')
+    search_fields = ('batch', 'semester', 'subject_teacher', 'subject')
+
+    pass
+
+
+class BatchAdmin(ModelAdmin):
+    save_as = True
+    pass
+
+
+admin.site.register(AssignSubjectTeacher, SubjectTeacherAdmin)
 admin.site.register(Teacher, TeacherAdmin)
+admin.site.register(Expert, ExpertAdmin)
 admin.site.register(Subject, SubjectAdmin)
+admin.site.register(Topic, TopicAdmin)
+admin.site.register(Batch, BatchAdmin)
 admin.site.register(Programme)
-admin.site.register(Semester)
+admin.site.register(Semester, SemesterAdmin)
 admin.site.register(AffiliatedInstitute)
+
