@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-
+    'mscteachers',
     'debug_toolbar',
     'college.apps.AllConfig',
     'django.contrib.admin',

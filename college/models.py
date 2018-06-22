@@ -44,7 +44,7 @@ class Semester(models.Model):
 
 
 class HumanResource(models.Model):
-    first_name = models.CharField(max_length=40,)
+    first_name = models.CharField(max_length=40, )
     middle_name = models.CharField(max_length=40, blank=True)
     last_name = models.CharField(max_length=40, )
     salutation = models.CharField(max_length=40, choices=Position_Choices, blank=True)
@@ -63,11 +63,19 @@ class HumanResource(models.Model):
         return self.full_name()
 
 
+class AffiliatedInstitute(models.Model):
+    institute_name = models.CharField(max_length=20, blank=True)
+    code = models.CharField(max_length=20, blank=True)
+
+    def __str__(self):
+        return self.institute_name
+
+
 class Teacher(HumanResource):
     teacher_id = models.CharField(max_length=20, blank=True, null=False)
     known_subjects = models.ManyToManyField('Subject', blank=True)
     aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
-    affiliated_institute = models.CharField(max_length=10, default="PUL")
+    affiliated_institute = models.ForeignKey('AffiliatedInstitute', on_delete=models.DO_NOTHING)
     started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"), blank=True)
 
     def get_teacher_id(self):
@@ -106,5 +114,5 @@ class Topic(models.Model):
 
 
 class Expert(HumanResource):
-    organization = models.CharField(max_length=10, blank=True)
+    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.DO_NOTHING)
     topic = models.ManyToManyField(Topic)

@@ -29,10 +29,11 @@ admin.site.register(Group, GroupAdmin)
 
 
 class ExpertAdmin(ModelAdmin):
-    list_filter = ('organization', 'upper_degree',)
-    list_display = ('full_name', 'mobile_phone', 'email', 'organization', 'upper_degree', 'get_topics')
+    list_display = (
+        'full_name', 'mobile_phone', 'email', 'organization', 'upper_degree',  'get_topics')
+    list_filter = ('organization__institute_name', 'upper_degree',)
     search_fields = (
-        'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email', 'organization',
+        'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email', 'organization__institute_name',
         'upper_degree', 'topic__name')
 
     def get_topics(self, obj):
@@ -48,19 +49,18 @@ class TopicAdmin(ModelAdmin):
 
 
 class TeacherAdmin(ModelAdmin):
-    list_filter = ('affiliated_institute', 'upper_degree', 'aff_type')
+    list_filter = ('affiliated_institute__institute_name', 'upper_degree', 'aff_type')
     list_display = (
         'full_name', 'mobile_phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'get_known_subjects')
     search_fields = (
-        'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email', 'affiliated_institute',
+        'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email',
+        'affiliated_institute__institute_name',
         'upper_degree', 'aff_type', 'known_subjects__name')
 
     def get_known_subjects(self, obj):
         return ",\n".join([p.name for p in obj.known_subjects.all()])
 
     get_known_subjects.short_description = "Subjects Known"
-
-    pass
     pass
 
 
@@ -78,3 +78,4 @@ admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Programme)
 admin.site.register(Semester)
+admin.site.register(AffiliatedInstitute)
