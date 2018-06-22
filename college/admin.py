@@ -48,19 +48,17 @@ class TopicAdmin(ModelAdmin):
 
 
 class TeacherAdmin(ModelAdmin):
-    list_filter = ('affiliated_institute', 'upper_degree', 'aff_type')
+    list_filter = ('affiliated_institute__institute_name', 'upper_degree', 'aff_type')
     list_display = (
         'full_name', 'mobile_phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type', 'get_known_subjects')
     search_fields = (
-        'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email', 'affiliated_institute',
+        'first_name', 'last_name', 'middle_name', 'salutation', 'mobile_phone', 'email', 'affiliated_institute__institute_name',
         'upper_degree', 'aff_type', 'known_subjects__name')
 
     def get_known_subjects(self, obj):
         return ",\n".join([p.name for p in obj.known_subjects.all()])
 
     get_known_subjects.short_description = "Subjects Known"
-
-    pass
     pass
 
 
@@ -78,3 +76,4 @@ admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Programme)
 admin.site.register(Semester)
+admin.site.register(Institutes)
