@@ -1,5 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
+{% load static %}
+
 
 {% block extrastyle %}{{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
@@ -53,7 +55,7 @@
             <div>
                 <h1> Actions</h1>
                 <a href="export">
-                    <img src="https://png.icons8.com/ios/15/000000/ms-excel-filled.png">
+                    <img src="{% static 'admin/img/excellogo.png' %}">
                     Generate Excel Table
                 </a>
             </div>
