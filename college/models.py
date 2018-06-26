@@ -19,7 +19,7 @@ class Programme(models.Model):
 
 class Batch(models.Model):
     year = models.CharField(max_length=40, default=datetime.date.today().strftime("%Y"))
-    programme = models.ForeignKey(Programme, on_delete=models.DO_NOTHING)
+    programme = models.ForeignKey(Programme, on_delete=models.CASCADE)
     number_of_students = models.IntegerField(default='48')
 
     def __str__(self):
@@ -78,7 +78,7 @@ class Teacher(HumanResource):
     teacher_id = models.CharField(max_length=20, blank=True, null=False)
     known_subjects = models.ManyToManyField('Subject', blank=True)
     aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
-    affiliated_institute = models.ForeignKey('AffiliatedInstitute', on_delete=models.DO_NOTHING)
+    affiliated_institute = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True  )
     started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"), blank=True)
 
     def get_teacher_id(self):
@@ -128,5 +128,5 @@ class Topic(models.Model):
 
 
 class Expert(HumanResource):
-    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.DO_NOTHING, null=True)
+    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True)
     topic = models.ManyToManyField(Topic)
