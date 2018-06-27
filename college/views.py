@@ -51,7 +51,7 @@ def generate_xlsx(request, assignsubjectteacherlist="none"):
         #
         sheet[colnum_string(col + 10) + str(row)] = str(subjectteachers.subject_teacher.email)
         #
-        sheet[colnum_string(col + 11) + str(row)] = str(subjectteachers.subject_teacher.affiliated_institute)
+        sheet[colnum_string(col + 11) + str(row)] = str(subjectteachers.subject_teacher.affiliated_institute.code)
         #
         sheet[colnum_string(col + 12) + str(row)] = str(subjectteachers.subject_teacher.upper_degree)
         #
@@ -94,19 +94,24 @@ def exportform(request):
             # post.date_of_creation = datetime.now()
             # post.save()
             if form.cleaned_data['batch'] is None:
-                if form.cleaned_data['semester'] is None:
-                    return generate_xlsx(request)
-                else:
-                    return generate_xlsx(request,
-                                         AssignSubjectTeacher.objects.filter(semester=form.cleaned_data['semester'].id))
+                batchV = None
             else:
-                if form.cleaned_data['semester'] is None:
-                    return generate_xlsx(request,
-                                         AssignSubjectTeacher.objects.filter(batch=form.cleaned_data['batch'].id))
-                else:
-                    return generate_xlsx(request,
-                                         AssignSubjectTeacher.objects.filter(semester=form.cleaned_data['semester'].id,
-                                                                             batch=form.cleaned_data['batch'].id))
+                batchV = form.cleaned_data['batch']
+
+            if form.cleaned_data['semester'] is None:
+                semesterV = None
+            else:
+                semesterV = form.cleaned_data['semester']
+
+            if form.cleaned_data['programme'] is None:
+                programmeV = None
+            else:
+                programmeV = form.cleaned_data['programme']
+
+            return generate_xlsx(request,
+                                 AssignSubjectTeacher.objects.filter(batch=batchV,
+                                                                     programme=programmeV, semester=semesterV, ))
+
     else:
 
         form = ExportForm()
