@@ -1,4 +1,7 @@
 {% extends "admin/base.html" %}
+{% load i18n static %}
+{% load static %}
+
 
 {% block title %}{{ title }} | {{ site_title|default:_('MSc Teachers & Experts Database') }}{% endblock %}
 
@@ -12,15 +15,17 @@
 {% endblock %}
 
 {% block footer %}
+    <br><br>
     <div style="
     text-align: center;
     color: white;
     background: #79aec8;
     padding: 10px 10px 10px 10px;
     bottom: 2px;
-    position: fixed;
+
     width: inherit;
 ">
-        Designed by: 072 BCT | 9860043019
+        System Designed by: 072 BCT | 9860043019
     </div>
+    <img src="{% static 'admin/img/campuslogo.jpg' %}">
 {% endblock %}
