@@ -4,12 +4,16 @@ from datetime import datetime
 import openpyxl
 from django.http import HttpResponse
 # Create your views here.
+from django.shortcuts import render
 from openpyxl import Workbook
 
 from .models import AssignSubjectTeacher
 
 
-def generate_xlsx(request):
+def generate_xlsx(request, assignsubjectteacherlist="none"):
+    if assignsubjectteacherlist == "none":
+        assignsubjectteacherlist = AssignSubjectTeacher.objects.all()
+
     if not request.user.is_superuser:
         return HttpResponse('Sorry! You need to be authorized to access this link.'
                             + "<a href='../'>" + 'Login here.' +
@@ -27,7 +31,7 @@ def generate_xlsx(request):
 
     sheet['M1'] = datetime.today().strftime('%Y-%m-%d')
 
-    for subjectteachers in AssignSubjectTeacher.objects.all():
+    for subjectteachers in assignsubjectteacherlist:
         sheet[colnum_string(col + 1) + str(row)] = str(subjectteachers.subject.subject_code)
         sheet[colnum_string(col + 2) + str(row)] = str(subjectteachers.subject.name)
         # teacher id
@@ -71,3 +75,40 @@ def colnum_string(n):
         n, remainder = divmod(n - 1, 26)
         string = chr(65 + remainder) + string
     return string
+
+
+def exportform(request):
+    if not request.user.is_superuser:
+        return HttpResponse('Sorry! You need to be authorized to access this link.'
+                            + "<a href='../'>" + 'Login here.' +
+                            "</a> <br> <br> <br> If you think this is a mistake contact WebAdmin.")
+
+    from college.forms import ExportForm
+    if request.method == "POST":
+
+        form = ExportForm(request.POST)
+
+        if form.is_valid():
+            # post = form.save(commit=False)
+            # post.author = request.user
+            # post.date_of_creation = datetime.now()
+            # post.save()
+            if form.cleaned_data['batch'] is None:
+                if form.cleaned_data['semester'] is None:
+                    return generate_xlsx(request)
+                else:
+                    return generate_xlsx(request,
+                                         AssignSubjectTeacher.objects.filter(semester=form.cleaned_data['semester'].id))
+            else:
+                if form.cleaned_data['semester'] is None:
+                    return generate_xlsx(request,
+                                         AssignSubjectTeacher.objects.filter(batch=form.cleaned_data['batch'].id))
+                else:
+                    return generate_xlsx(request,
+                                         AssignSubjectTeacher.objects.filter(semester=form.cleaned_data['semester'].id,
+                                                                             batch=form.cleaned_data['batch'].id))
+    else:
+
+        form = ExportForm()
+
+    return render(request, 'admin/exportform.html', {'form': form})
