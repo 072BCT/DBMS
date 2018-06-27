@@ -93,24 +93,17 @@ def exportform(request):
             # post.author = request.user
             # post.date_of_creation = datetime.now()
             # post.save()
-            if form.cleaned_data['batch'] is None:
-                batchV = None
-            else:
-                batchV = form.cleaned_data['batch']
 
-            if form.cleaned_data['semester'] is None:
-                semesterV = None
-            else:
-                semesterV = form.cleaned_data['semester']
+            outputassignsubjectteacher = AssignSubjectTeacher.objects.all()
 
-            if form.cleaned_data['programme'] is None:
-                programmeV = None
-            else:
-                programmeV = form.cleaned_data['programme']
+            if form.cleaned_data['batch'] is not None:
+                outputassignsubjectteacher.filter(batch=form.cleaned_data['batch'])
+            if form.cleaned_data['programme'] is not None:
+                outputassignsubjectteacher.filter(programme=form.cleaned_data['programme'])
+            if form.cleaned_data['semester'] is not None:
+                outputassignsubjectteacher.filter(semester=form.cleaned_data['semester'])
 
-            return generate_xlsx(request,
-                                 AssignSubjectTeacher.objects.filter(batch=batchV,
-                                                                     programme=programmeV, semester=semesterV, ))
+            return generate_xlsx(request, outputassignsubjectteacher)
 
     else:
 
