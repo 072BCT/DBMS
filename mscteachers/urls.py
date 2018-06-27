@@ -22,7 +22,7 @@ from college import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^.*export.*$', views.generate_xlsx),
+    url(r'^.*export.*$', views.exportform),
 
     path('', admin.site.urls),
 ]
