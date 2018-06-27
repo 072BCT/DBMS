@@ -3,16 +3,18 @@
 {% load static %}
 
 
+
+{% block extrahead %}
+        <img src="{% static 'admin/img/campuslogo.jpg' %}">
+{% endblock %}
+
+
 {% block title %}{{ title }} | {{ site_title|default:_('MSc Teachers & Experts Database') }}{% endblock %}
 
 {% block branding %}
     <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('MSc Teachers & Experts Database') }}</a></h1>
 {% endblock %}
 
-
-{% block nav-global %}
-    <div style="   display: inline-flex;"> IOE, Pulchowk Campus | DOECE</div>
-{% endblock %}
 
 {% block footer %}
     <br><br>
@@ -27,5 +29,5 @@
 ">
         System Designed by: 072 BCT | 9860043019
     </div>
-    <img src="{% static 'admin/img/campuslogo.jpg' %}">
+
 {% endblock %}
