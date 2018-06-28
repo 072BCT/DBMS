@@ -23,6 +23,8 @@ from college import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^.*export.*$', views.exportform),
+    url(r'^.*dumpteachers.*$', views.exportteachers, name='dumpteachers'),
+    url(r'^.*dumpexperts.*$', views.exportexperts, name='dumpexperts'),
 
     path('', admin.site.urls),
 ]

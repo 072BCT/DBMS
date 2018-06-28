@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from openpyxl import Workbook
 
-from .models import AssignSubjectTeacher
+from .models import AssignSubjectTeacher, Teacher, Expert
 
 
 def generate_xlsx(request, assignsubjectteacherlist="none"):
@@ -35,7 +35,7 @@ def generate_xlsx(request, assignsubjectteacherlist="none"):
         sheet[colnum_string(col + 1) + str(row)] = str(subjectteachers.subject.subject_code)
         sheet[colnum_string(col + 2) + str(row)] = str(subjectteachers.subject.name)
         # teacher id
-        sheet[colnum_string(col + 3) + str(row)] = str(subjectteachers.semester.getyearpart())
+        sheet[colnum_string(col + 3) + str(row)] = str(subjectteachers.getyearpart())
         sheet[colnum_string(col + 4) + str(row)] = str(subjectteachers.subject_teacher.teacher_id)
         #
         # # teacher experience required
@@ -94,19 +94,147 @@ def exportform(request):
             # post.date_of_creation = datetime.now()
             # post.save()
 
-            outputassignsubjectteacher = AssignSubjectTeacher.objects.all()
+            queryList = AssignSubjectTeacher.objects.all()
+
+            if form.cleaned_data['year'] is not None:
+                global queryList
+                queryList = queryList.filter(year=form.cleaned_data['year'])
+
+            if form.cleaned_data['part'] is not "":
+                if form.cleaned_data['part'] == 'Odd':
+                    global queryList
+                    queryList = queryList.filter(semester__in=['First', 'Third'])
+                elif form.cleaned_data['part'] == 'Even':
+                    global queryList
+                    queryList = queryList.filter(semester__in=['Second', 'Fourth'])
 
             if form.cleaned_data['batch'] is not None:
-                outputassignsubjectteacher.filter(batch=form.cleaned_data['batch'])
+                global queryList
+                queryList = queryList.filter(batch=form.cleaned_data['batch'])
             if form.cleaned_data['programme'] is not None:
-                outputassignsubjectteacher.filter(programme=form.cleaned_data['programme'])
-            if form.cleaned_data['semester'] is not None:
-                outputassignsubjectteacher.filter(semester=form.cleaned_data['semester'])
+                global queryList
+                queryList = queryList.filter(
+                    batch__programme=form.cleaned_data['programme'])
+            if form.cleaned_data['semester'] is not "":
+                global queryList
+                queryList = queryList.filter(semester=form.cleaned_data['semester'])
 
-            return generate_xlsx(request, outputassignsubjectteacher)
+            return generate_xlsx(request, queryList)
 
     else:
 
         form = ExportForm()
 
     return render(request, 'admin/exportform.html', {'form': form})
+
+
+def exportteachers(request):
+    if not request.user.is_superuser:
+        return HttpResponse('Sorry! You need to be authorized to access this link.'
+                            + "<a href='../'>" + 'Login here.' +
+                            "</a> <br> <br> <br> If you think this is a mistake contact WebAdmin.")
+    output_path = os.path.join(os.path.dirname(os.path.realpath(__name__)), 'temp_python_spreadsheet.xlsx')
+    wb = Workbook()
+    book = openpyxl.Workbook()
+
+    sheet = book.get_sheet_by_name("Sheet")
+
+    row = 3
+    col = -4
+
+    sheet['A2'] = "Full Name"
+    sheet['B2'] = "Experience Years"
+    sheet['C2'] = "Known Subjects"
+    sheet['D2'] = "Home Phone"
+    sheet['E2'] = "Mobile"
+    sheet['F2'] = "Email"
+    sheet['G2'] = "Affiliated Institute"
+    sheet['H2'] = "Upper Degree"
+    sheet['I2'] = "Affilation Type"
+
+    sheet['B1'] = "Teachers List"
+    sheet['E1'] = "Generated: "
+    sheet['F1'] = datetime.today().strftime('%Y-%m-%d')
+
+    for eachteacher in Teacher.objects.all():
+        sheet[colnum_string(col + 5) + str(row)] = str(eachteacher.full_name())
+        #
+        sheet[colnum_string(col + 6) + str(row)] = str(eachteacher.get_teacher_experience_years())
+        #
+        sheet[colnum_string(col + 7) + str(row)] = str(eachteacher.get_known_subjects())
+        #
+        sheet[colnum_string(col + 8) + str(row)] = str(eachteacher.home_phone)
+        #
+        sheet[colnum_string(col + 9) + str(row)] = str(eachteacher.mobile_phone)
+        #
+        sheet[colnum_string(col + 10) + str(row)] = str(eachteacher.email)
+        #
+        sheet[colnum_string(col + 11) + str(row)] = str(eachteacher.affiliated_institute.code)
+        #
+        sheet[colnum_string(col + 12) + str(row)] = str(eachteacher.upper_degree)
+        #
+        sheet[colnum_string(col + 13) + str(row)] = str(eachteacher.aff_type)
+
+        # TODO add other methods to dump in xlsx here
+
+        row += 1
+
+    book.save(output_path)
+
+    response = HttpResponse(open(output_path, 'rb').read())
+    response['Content-Type'] = 'mimetype/submimetype'
+    response['Content-Disposition'] = 'attachment; filename=TeachersList.xlsx'
+    return response
+
+
+def exportexperts(request):
+    if not request.user.is_superuser:
+        return HttpResponse('Sorry! You need to be authorized to access this link.'
+                            + "<a href='../'>" + 'Login here.' +
+                            "</a> <br> <br> <br> If you think this is a mistake contact WebAdmin.")
+    output_path = os.path.join(os.path.dirname(os.path.realpath(__name__)), 'temp_python_spreadsheet.xlsx')
+    wb = Workbook()
+    book = openpyxl.Workbook()
+
+    sheet = book.get_sheet_by_name("Sheet")
+
+    row = 3
+    col = -4
+
+    sheet['A2'] = "Full Name"
+    sheet['B2'] = "Known Topics"
+    sheet['C2'] = "Home Phone"
+    sheet['D2'] = "Mobile"
+    sheet['E2'] = "Email"
+    sheet['F2'] = "Organization "
+    sheet['G2'] = "Upper Degree"
+
+    sheet['B1'] = "Experts List"
+    sheet['E1'] = "Generated: "
+    sheet['F1'] = datetime.today().strftime('%Y-%m-%d')
+
+    for eachteacher in Expert.objects.all():
+        sheet[colnum_string(col + 5) + str(row)] = str(eachteacher.full_name())
+
+        sheet[colnum_string(col + 6) + str(row)] = str(eachteacher.get_known_topics())
+        #
+        sheet[colnum_string(col + 7) + str(row)] = str(eachteacher.home_phone)
+        #
+        sheet[colnum_string(col + 8) + str(row)] = str(eachteacher.mobile_phone)
+        #
+        sheet[colnum_string(col + 9) + str(row)] = str(eachteacher.email)
+        #
+        sheet[colnum_string(col + 10) + str(row)] = str(eachteacher.organization.institute_name)
+        #
+        sheet[colnum_string(col + 11) + str(row)] = str(eachteacher.upper_degree)
+
+        # TODO add other methods to dump in xlsx here
+
+        row += 1
+
+    book.save(output_path)
+
+    response = HttpResponse(open(output_path, 'rb').read())
+    response['Content-Type'] = 'mimetype/submimetype'
+    response['Content-Disposition'] = 'attachment; filename=ExpertsList.xlsx'
+    return response

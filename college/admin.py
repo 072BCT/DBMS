@@ -72,18 +72,14 @@ class SubjectAdmin(ModelAdmin):
     pass
 
 
-class SemesterAdmin(ModelAdmin):
-    pass
-
-
 class SubjectTeacherAdmin(ModelAdmin):
     save_as = True
     list_filter = (
-        'batch__year', 'programme__name', 'semester__name', 'subject_teacher__first_name', 'subject__name')
+        'year', 'batch__year__name', 'batch__programme__name', 'semester', 'subject_teacher__first_name', 'subject__name')
     list_display = (
-        'batch', 'semester', 'subject_teacher', 'subject')
+        'year', 'batch', 'semester', 'subject_teacher', 'subject')
     search_fields = (
-    'batch__year', 'programme__name', 'semester__name', 'subject_teacher__first_name', 'subject__name')
+        'year', 'batch__year__name', 'batch__programme__name', 'semester', 'subject_teacher__first_name', 'subject__name')
 
     pass
 
@@ -100,6 +96,5 @@ admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Batch, BatchAdmin)
 admin.site.register(Programme)
-admin.site.register(Semester, SemesterAdmin)
 admin.site.register(AffiliatedInstitute)
-
+admin.site.register(Year)

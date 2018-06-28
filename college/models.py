@@ -6,6 +6,7 @@ from django.db import models
 
 
 Degree_Choices = {('PhD', 'PhD'), ('MSc', 'MSc'), ('Bachelors', 'Bachelors'), ('Diploma', 'Diploma')}
+Semester_Choices = {('First', 'First'), ('Second', 'Second'), ('Third', 'Third'), ('Fourth', 'Fourth')}
 Affiliation_Choices = {('Permanent', 'Permanent'), ('Contract', 'Contract'), ('Visiting', 'Visiting')}
 Position_Choices = {('Prof Dr.', 'Prof Dr'), ('Dr.', 'Dr')}
 
@@ -17,27 +18,24 @@ class Programme(models.Model):
         return self.name
 
 
+class Year(models.Model):
+    name = models.CharField(max_length=40, default=datetime.date.today().strftime("%Y"))
+
+    def __str__(self):
+        return self.name
+
+
 class Batch(models.Model):
-    year = models.CharField(max_length=40, default=datetime.date.today().strftime("%Y"))
-    # programme = models.ForeignKey(Programme, on_delete=models.CASCADE)
+    year = models.ForeignKey(Year, on_delete=models.CASCADE)
+    programme = models.ForeignKey(Programme, on_delete=models.CASCADE)
     number_of_students = models.IntegerField(default='48')
 
     def __str__(self):
-        return self.year
+        return self.programme.name + ":" + self.year.name
 
 
 class Semester(models.Model):
     name = models.CharField(max_length=40, blank=True, null=True)
-
-    def getyearpart(self):
-        if self.name == "First":
-            return "I/I"
-        if self.name == "Second":
-            return "I/II"
-        if self.name == "Third":
-            return "II/I"
-        if self.name == "Fourth":
-            return "II/II"
 
     def __str__(self):
         return self.name
@@ -45,9 +43,9 @@ class Semester(models.Model):
 
 class HumanResource(models.Model):
     salutation = models.CharField(max_length=40, choices=Position_Choices, blank=True)
-    first_name = models.CharField(max_length=40, blank=True)
+    first_name = models.CharField(max_length=40, )
     middle_name = models.CharField(max_length=40, blank=True)
-    last_name = models.CharField(max_length=40, blank=True)
+    last_name = models.CharField(max_length=40, )
     mobile_phone = models.CharField(max_length=20, blank=True)
     home_phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(max_length=30, blank=True)
@@ -65,7 +63,7 @@ class HumanResource(models.Model):
 
 class AffiliatedInstitute(models.Model):
     institute_name = models.CharField(max_length=20)
-    code = models.CharField(max_length=20 )
+    code = models.CharField(max_length=20)
     address = models.CharField(max_length=40, blank=True)
     office_phone = models.CharField(max_length=20, blank=True)
     office_email = models.CharField(max_length=20, blank=True)
@@ -80,6 +78,9 @@ class Teacher(HumanResource):
     aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
     affiliated_institute = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True)
     started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"), blank=True)
+
+    def get_known_subjects(self):
+        return ",\n".join([p.name for p in self.known_subjects.all()])
 
     def get_teacher_id(self):
         return str(self.teacher_id)
@@ -110,15 +111,35 @@ class Subject(models.Model):
 
 
 class AssignSubjectTeacher(models.Model):
+    year = models.ForeignKey(Year, on_delete=models.CASCADE)
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
-    programme = models.ForeignKey(Programme, on_delete=models.CASCADE)
-    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+    # programme = models.ForeignKey(Programme, on_delete=models.CASCADE)
+    semester = models.CharField(max_length=40, choices=Semester_Choices)
     subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     subject_teacher_teaching_experience_years = models.CharField(max_length=4, blank=True)
 
+    def programme(self):
+        return self.batch.programme.name
+
+    def getyearpart(self):
+        if self.semester == "First":
+            return "I/I"
+        if self.semester == "Second":
+            return "I/II"
+        if self.semester == "Third":
+            return "II/I"
+        if self.semester == "Fourth":
+            return "II/II"
+
+    def part(self):
+        if self.semester == 'First' or 'Third':
+            return 'Odd'
+        elif self.semester == 'Second' or 'Fourth':
+            return 'Even'
+
     def __str__(self):
-        return self.batch.year + " - " + self.programme.name + self.semester.name + "  :  " + self.subject_teacher.first_name + " , " + self.subject.name
+        return self.batch.year.name + " - " + self.batch.programme.name + self.semester + "  :  " + self.subject_teacher.first_name + " , " + self.subject.name
 
 
 class Topic(models.Model):
@@ -131,3 +152,6 @@ class Topic(models.Model):
 class Expert(HumanResource):
     organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True)
     topic = models.ManyToManyField(Topic)
+
+    def get_known_topics(self):
+        return ",\n".join([p.name for p in self.topic.all()])
