@@ -112,12 +112,12 @@
         $('form#changelist-form table#result_list tr').on('change', 'td:gt(0) :input', function() {
             list_editable_changed = true;
         });
-        $('form#changelist-form button[name="index"]').click(function(event) {
+        $('form#changelist-form button[semester_name="index"]').click(function(event) {
             if (list_editable_changed) {
                 return confirm(gettext("You have unsaved changes on individual editable fields. If you run an action, your unsaved changes will be lost."));
             }
         });
-        $('form#changelist-form input[name="_save"]').click(function(event) {
+        $('form#changelist-form input[semester_name="_save"]').click(function(event) {
             var action_changed = false;
             $('select option:selected', options.actionContainer).each(function() {
                 if ($(this).val()) {
