@@ -97,26 +97,22 @@ def exportform(request):
             queryList = AssignSubjectTeacher.objects.all()
 
             if form.cleaned_data['year'] is not None:
-                global queryList
                 queryList = queryList.filter(year=form.cleaned_data['year'])
 
             if form.cleaned_data['part'] is not "":
                 if form.cleaned_data['part'] == 'Odd':
-                    global queryList
+
                     queryList = queryList.filter(semester__in=['First', 'Third'])
                 elif form.cleaned_data['part'] == 'Even':
-                    global queryList
+
                     queryList = queryList.filter(semester__in=['Second', 'Fourth'])
 
             if form.cleaned_data['batch'] is not None:
-                global queryList
                 queryList = queryList.filter(batch=form.cleaned_data['batch'])
             if form.cleaned_data['programme'] is not None:
-                global queryList
                 queryList = queryList.filter(
                     batch__programme=form.cleaned_data['programme'])
             if form.cleaned_data['semester'] is not "":
-                global queryList
                 queryList = queryList.filter(semester=form.cleaned_data['semester'])
 
             return generate_xlsx(request, queryList)
