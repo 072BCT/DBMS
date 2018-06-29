@@ -674,7 +674,7 @@ XRegExp = XRegExp || (function (undef) {
  * or regex, and the replacement can be a string or a function to be called for each match. To
  * perform a global search and replace, use the optional `scope` argument or include flag `g` if
  * using a regex. Replacement strings can use `${n}` for named and numbered backreferences.
- * Replacement functions can use named backreferences via `arguments[0].name`. Also fixes browser
+ * Replacement functions can use named backreferences via `arguments[0].semester_name`. Also fixes browser
  * bugs compared to the native `String.prototype.replace` and can be used reliably cross-browser.
  * @memberOf XRegExp
  * @param {String} str String to search.
@@ -687,7 +687,7 @@ XRegExp = XRegExp || (function (undef) {
  *     <li>$' - Inserts the string that follows the matched substring (right context).
  *     <li>$n, $nn - Where n/nn are digits referencing an existent capturing group, inserts
  *       backreference n/nn.
- *     <li>${n} - Where n is a name or any number of digits that reference an existent capturing
+ *     <li>${n} - Where n is a semester_name or any number of digits that reference an existent capturing
  *       group, inserts backreference n.
  *   Replacement functions are invoked with three or more arguments:
  *     <li>The matched substring (corresponds to $& above). Named backreferences are accessible as
@@ -701,12 +701,12 @@ XRegExp = XRegExp || (function (undef) {
  * @example
  *
  * // Regex search, using named backreferences in replacement string
- * var name = XRegExp('(?<first>\\w+) (?<last>\\w+)');
- * XRegExp.replace('John Smith', name, '${last}, ${first}');
+ * var semester_name = XRegExp('(?<first>\\w+) (?<last>\\w+)');
+ * XRegExp.replace('John Smith', semester_name, '${last}, ${first}');
  * // -> 'Smith, John'
  *
  * // Regex search, using named backreferences in replacement function
- * XRegExp.replace('John Smith', name, function (match) {
+ * XRegExp.replace('John Smith', semester_name, function (match) {
  *   return match.last + ', ' + match.first;
  * });
  * // -> 'Smith, John'
@@ -847,7 +847,7 @@ XRegExp = XRegExp || (function (undef) {
                 var name = captureNames[numCaptures - numPriorCaptures];
                 if (paren) { // Capturing group
                     ++numCaptures;
-                    if (name) { // If the current capture has a name
+                    if (name) { // If the current capture has a semester_name
                         return "(?<" + name + ">";
                     }
                 } else if (backref) { // Backreference
@@ -889,7 +889,7 @@ XRegExp = XRegExp || (function (undef) {
  *------------------------------------*/
 
 /**
- * Adds named capture support (with backreferences returned as `result.name`), and fixes browser
+ * Adds named capture support (with backreferences returned as `result.semester_name`), and fixes browser
  * bugs in the native `RegExp.prototype.exec`. Calling `XRegExp.install('natives')` uses this to
  * override the native method. Use via `XRegExp.exec` without overriding natives.
  * @private
@@ -951,7 +951,7 @@ XRegExp = XRegExp || (function (undef) {
     };
 
 /**
- * Adds named capture support (with backreferences returned as `result.name`), and fixes browser
+ * Adds named capture support (with backreferences returned as `result.semester_name`), and fixes browser
  * bugs in the native `String.prototype.match`. Calling `XRegExp.install('natives')` uses this to
  * override the native method.
  * @private
@@ -972,7 +972,7 @@ XRegExp = XRegExp || (function (undef) {
 
 /**
  * Adds support for `${n}` tokens for named and numbered backreferences in replacement text, and
- * provides named backreferences to replacement functions as `arguments[0].name`. Also fixes
+ * provides named backreferences to replacement functions as `arguments[0].semester_name`. Also fixes
  * browser bugs in replacement text syntax when performing a replacement using a nonregex search
  * value, and the value of a replacement regex's `lastIndex` property during replacement iterations
  * and upon completion. Note that this doesn't support SpiderMonkey's proprietary third (`flags`)
@@ -1165,7 +1165,7 @@ XRegExp = XRegExp || (function (undef) {
             return nativ.test.call(quantifier, match.input.slice(match.index + match[0].length)) ? "" : "(?:)";
         });
 
-/* Named backreference: \k<name>
+/* Named backreference: \k<semester_name>
  * Backreference names can use the characters A-Z, a-z, 0-9, _, and $ only.
  */
     add(/\\k<([\w$]+)>/,
@@ -1208,9 +1208,9 @@ XRegExp = XRegExp || (function (undef) {
             customFlags: "s"
         });
 
-/* Named capturing group; match the opening delimiter only: (?<name>
+/* Named capturing group; match the opening delimiter only: (?<semester_name>
  * Capture names can use the characters A-Z, a-z, 0-9, _, and $ only. Names can't be integers.
- * Supports Python-style (?P<name> as an alternate syntax to avoid issues in recent Opera (which
+ * Supports Python-style (?P<semester_name> as an alternate syntax to avoid issues in recent Opera (which
  * natively supports the Python-style syntax). Otherwise, XRegExp might treat numbered
  * backreferences to Python-style named capture as octals.
  */
@@ -1218,7 +1218,7 @@ XRegExp = XRegExp || (function (undef) {
         function (match) {
             if (!isNaN(match[1])) {
                 // Avoid incorrect lookups, since named backreferences are added to match arrays
-                throw new SyntaxError("can't use integer as capture name " + match[0]);
+                throw new SyntaxError("can't use integer as capture semester_name " + match[0]);
             }
             this.captureNames.push(match[1]);
             this.hasNamedCapture = true;
@@ -1292,7 +1292,7 @@ XRegExp = XRegExp || (function (undef) {
  *  Private helper functions
  *------------------------------------*/
 
-// Generates a standardized token name (lowercase, with hyphens, spaces, and underscores removed)
+// Generates a standardized token semester_name (lowercase, with hyphens, spaces, and underscores removed)
     function slug(name) {
         return name.replace(/[- _]+/g, "").toLowerCase();
     }
@@ -1899,11 +1899,11 @@ XRegExp = XRegExp || (function (undef) {
  *   valueNames: ['between', 'left', 'match', 'right']
  * });
  * // -> [
- * // {name: 'between', value: 'Here is ',       start: 0,  end: 8},
- * // {name: 'left',    value: '<div>',          start: 8,  end: 13},
- * // {name: 'match',   value: ' <div>an</div>', start: 13, end: 27},
- * // {name: 'right',   value: '</div>',         start: 27, end: 33},
- * // {name: 'between', value: ' example',       start: 33, end: 41}
+ * // {semester_name: 'between', value: 'Here is ',       start: 0,  end: 8},
+ * // {semester_name: 'left',    value: '<div>',          start: 8,  end: 13},
+ * // {semester_name: 'match',   value: ' <div>an</div>', start: 13, end: 27},
+ * // {semester_name: 'right',   value: '</div>',         start: 27, end: 33},
+ * // {semester_name: 'between', value: ' example',       start: 33, end: 41}
  * // ]
  *
  * // Omitting unneeded parts with null valueNames, and using escapeChar
@@ -1913,10 +1913,10 @@ XRegExp = XRegExp || (function (undef) {
  *   escapeChar: '\\'
  * });
  * // -> [
- * // {name: 'literal', value: '...', start: 0, end: 3},
- * // {name: 'value',   value: '1',   start: 4, end: 5},
- * // {name: 'literal', value: '\\{', start: 6, end: 8},
- * // {name: 'value',   value: 'function(x,y){return y+x;}', start: 9, end: 35}
+ * // {semester_name: 'literal', value: '...', start: 0, end: 3},
+ * // {semester_name: 'value',   value: '1',   start: 4, end: 5},
+ * // {semester_name: 'literal', value: '\\{', start: 6, end: 8},
+ * // {semester_name: 'value',   value: 'function(x,y){return y+x;}', start: 9, end: 35}
  * // ]
  *
  * // Sticky mode via flag y
@@ -2087,8 +2087,8 @@ XRegExp = XRegExp || (function (undef) {
  * outer pattern and provided subpatterns are automatically renumbered to work correctly. Native
  * flags used by provided subpatterns are ignored in favor of the `flags` argument.
  * @memberOf XRegExp
- * @param {String} pattern XRegExp pattern using `{{name}}` for embedded subpatterns. Allows
- *   `({{name}})` as shorthand for `(?<name>{{name}})`. Patterns cannot be embedded within
+ * @param {String} pattern XRegExp pattern using `{{semester_name}}` for embedded subpatterns. Allows
+ *   `({{semester_name}})` as shorthand for `(?<semester_name>{{semester_name}})`. Patterns cannot be embedded within
  *   character classes.
  * @param {Object} subs Lookup object for named subpatterns. Values can be strings or regexes. A
  *   leading `^` and trailing unescaped `$` are stripped from subpatterns, if both are present.
@@ -2151,8 +2151,8 @@ XRegExp = XRegExp || (function (undef) {
                 if ($1) { // Named subpattern was wrapped in a capturing group
                     capName = outerCapNames[numOuterCaps];
                     outerCapsMap[++numOuterCaps] = ++numCaps;
-                    // If it's a named group, preserve the name. Otherwise, use the subpattern name
-                    // as the capture name
+                    // If it's a named group, preserve the semester_name. Otherwise, use the subpattern semester_name
+                    // as the capture semester_name
                     intro = "(?<" + (capName || subName) + ">";
                 } else {
                     intro = "(?:";
@@ -2162,7 +2162,7 @@ XRegExp = XRegExp || (function (undef) {
                     if (paren) { // Capturing group
                         capName = data[subName].names[numCaps - numPriorCaps];
                         ++numCaps;
-                        if (capName) { // If the current capture has a name, preserve the name
+                        if (capName) { // If the current capture has a semester_name, preserve the semester_name
                             return "(?<" + capName + ">";
                         }
                     } else if (backref) { // Backreference
@@ -2174,7 +2174,7 @@ XRegExp = XRegExp || (function (undef) {
             if ($3) { // Capturing group
                 capName = outerCapNames[numOuterCaps];
                 outerCapsMap[++numOuterCaps] = ++numCaps;
-                if (capName) { // If the current capture has a name, preserve the name
+                if (capName) { // If the current capture has a semester_name, preserve the semester_name
                     return "(?<" + capName + ">";
                 }
             } else if ($4) { // Backreference

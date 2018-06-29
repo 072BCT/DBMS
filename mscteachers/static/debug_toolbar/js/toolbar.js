@@ -99,7 +99,7 @@
                 if (id === '' || !id) {
                     return;
                 }
-                var name = btn.attr('data-toggle-name');
+                var name = btn.attr('data-toggle-semester_name');
                 btn.parents('.djDebugPanelContent').find('#' + name + '_' + id).find('.djDebugCollapsed').toggle(open_me);
                 btn.parents('.djDebugPanelContent').find('#' + name + '_' + id).find('.djDebugUncollapsed').toggle(!open_me);
                 $(this).parents('.djDebugPanelContent').find('.djToggleDetails_' + id).each(function(){

@@ -5,14 +5,14 @@ from django.db import models
 # pw - dbms1234
 
 
-Degree_Choices = {('PhD', 'PhD'), ('MSc', 'MSc'), ('Bachelors', 'Bachelors'), ('Diploma', 'Diploma')}
+Degree_Choices = {('PhD', 'PhD'), ('Masters', 'Masters'), ('Bachelors', 'Bachelors'), ('Diploma', 'Diploma')}
 Semester_Choices = {('First', 'First'), ('Second', 'Second'), ('Third', 'Third'), ('Fourth', 'Fourth')}
 Affiliation_Choices = {('Permanent', 'Permanent'), ('Contract', 'Contract'), ('Visiting', 'Visiting')}
-Position_Choices = {('Prof Dr.', 'Prof Dr'), ('Dr.', 'Dr')}
+Position_Choices = {('Prof Dr.', 'Prof Dr'), ('Dr.', 'Dr'), ('Mr.', 'Mr'), ('Ms.', 'Ms'), ('Mrs.', 'Mrs')}
 
 
 class Programme(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
@@ -35,10 +35,10 @@ class Batch(models.Model):
 
 
 class Semester(models.Model):
-    name = models.CharField(max_length=40, blank=True, null=True)
+    semester_name = models.CharField(max_length=40, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.semester_name
 
 
 class HumanResource(models.Model):
@@ -62,9 +62,9 @@ class HumanResource(models.Model):
 
 
 class AffiliatedInstitute(models.Model):
-    institute_name = models.CharField(max_length=20)
+    institute_name = models.CharField(max_length=50)
     code = models.CharField(max_length=20)
-    address = models.CharField(max_length=40, blank=True)
+    address = models.CharField(max_length=50, blank=True)
     office_phone = models.CharField(max_length=20, blank=True)
     office_email = models.CharField(max_length=20, blank=True)
 
@@ -74,7 +74,7 @@ class AffiliatedInstitute(models.Model):
 
 class Teacher(HumanResource):
     teacher_id = models.CharField(max_length=20, blank=True, null=False)
-    known_subjects = models.ManyToManyField('Subject', blank=True)
+    #known_subjects = models.ManyToManyField('Subject', null=True)
     aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
     affiliated_institute = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True)
     started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"), blank=True)

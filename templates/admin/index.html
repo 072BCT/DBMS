@@ -13,7 +13,21 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
+
+    <div>
+        <h2> Actions </h2>
+        <a href="/college/assignsubjectteacher/">
+            Assign Subject Teachers
+        </a> &nbsp &nbsp &nbsp &nbsp
+
+        <a href="export">
+            <img src="{% static 'admin/img/excellogo.png' %}">
+            Export Excel Table
+        </a>
+    </div> <br><br>
+
     <div id="content-main">
+
 
         {% if app_list %}
             {% for app in app_list %}
@@ -23,6 +37,8 @@
                             <a href="{{ app.app_url }}" class="section"
                                title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
                         </caption>
+
+
                         {% for model in app.models %}
                             <tr class="model-{{ model.object_name|lower }}">
                                 {% if model.admin_url %}
@@ -52,14 +68,7 @@
                     </table>
                 </div>
             {% endfor %}
-            <div>
-                <h1> Actions</h1>
-                <a href="export">
-                    <img src="{% static 'admin/img/excellogo.png' %}">
-                    Generate Excel Table
-                </a>
 
-            </div>
         {% else %}
             <p>{% trans "You don't have permission to view or edit anything." %}</p>
         {% endif %}

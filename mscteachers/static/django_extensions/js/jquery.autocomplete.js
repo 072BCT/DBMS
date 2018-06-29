@@ -127,7 +127,7 @@
     };
 
     /**
-     * Create partial url for a name/value pair
+     * Create partial url for a semester_name/value pair
      */
     var makeUrlParam = function(name, value) {
         return [name, encodeURIComponent(value)].join('=');
@@ -238,7 +238,7 @@
         this.cacheLength_ = 0;
 
         /**
-         * @property {string} Class name to mark selected item
+         * @property {string} Class semester_name to mark selected item
          * @private
          */
         this.selectClass_ = 'jquery-autocomplete-selected-item';
@@ -620,7 +620,7 @@
 
     /**
      * Create or update an extra parameter for the remote request
-     * @param {string} name Parameter name
+     * @param {string} name Parameter semester_name
      * @param {string} value Parameter value
      * @public
      */

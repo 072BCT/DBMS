@@ -140,13 +140,12 @@ def exportteachers(request):
 
     sheet['A2'] = "Full Name"
     sheet['B2'] = "Experience Years"
-    sheet['C2'] = "Known Subjects"
-    sheet['D2'] = "Home Phone"
-    sheet['E2'] = "Mobile"
-    sheet['F2'] = "Email"
-    sheet['G2'] = "Affiliated Institute"
-    sheet['H2'] = "Upper Degree"
-    sheet['I2'] = "Affilation Type"
+    sheet['C2'] = "Home Phone"
+    sheet['D2'] = "Mobile"
+    sheet['E2'] = "Email"
+    sheet['F2'] = "Affiliated Institute"
+    sheet['G2'] = "Upper Degree"
+    sheet['H2'] = "Affilation Type"
 
     sheet['B1'] = "Teachers List"
     sheet['E1'] = "Generated: "
@@ -157,19 +156,17 @@ def exportteachers(request):
         #
         sheet[colnum_string(col + 6) + str(row)] = str(eachteacher.get_teacher_experience_years())
         #
-        sheet[colnum_string(col + 7) + str(row)] = str(eachteacher.get_known_subjects())
+        sheet[colnum_string(col + 7) + str(row)] = str(eachteacher.home_phone)
         #
-        sheet[colnum_string(col + 8) + str(row)] = str(eachteacher.home_phone)
+        sheet[colnum_string(col + 8) + str(row)] = str(eachteacher.mobile_phone)
         #
-        sheet[colnum_string(col + 9) + str(row)] = str(eachteacher.mobile_phone)
+        sheet[colnum_string(col + 9) + str(row)] = str(eachteacher.email)
         #
-        sheet[colnum_string(col + 10) + str(row)] = str(eachteacher.email)
+        sheet[colnum_string(col + 10) + str(row)] = str(eachteacher.affiliated_institute.code)
         #
-        sheet[colnum_string(col + 11) + str(row)] = str(eachteacher.affiliated_institute.code)
+        sheet[colnum_string(col + 11) + str(row)] = str(eachteacher.upper_degree)
         #
-        sheet[colnum_string(col + 12) + str(row)] = str(eachteacher.upper_degree)
-        #
-        sheet[colnum_string(col + 13) + str(row)] = str(eachteacher.aff_type)
+        sheet[colnum_string(col + 12) + str(row)] = str(eachteacher.aff_type)
 
         # TODO add other methods to dump in xlsx here
 
