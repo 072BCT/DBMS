@@ -74,7 +74,7 @@ class AffiliatedInstitute(models.Model):
 
 class Teacher(HumanResource):
     teacher_id = models.CharField(max_length=20, blank=True, null=False)
-    #known_subjects = models.ManyToManyField('Subject', null=True)
+    # known_subjects = models.ManyToManyField('Subject', null=True)
     aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
     affiliated_institute = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True)
     started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"), blank=True)

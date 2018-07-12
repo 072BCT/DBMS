@@ -8,6 +8,14 @@ from .models import *
 
 
 # https://docs.djangoproject.com/en/2.0/ref/contrib/admin/#modeladmin-objects
+def custom_titled_filter(title):
+    class Wrapper(admin.FieldListFilter):
+        def __new__(cls, *args, **kwargs):
+            instance = admin.FieldListFilter.create(*args, **kwargs)
+            instance.title = title
+            return instance
+
+    return Wrapper
 
 
 class AdminSite(AdminSite):
@@ -58,7 +66,6 @@ class TeacherAdmin(ModelAdmin):
         'upper_degree', 'aff_type')
 
 
-
 class SubjectAdmin(ModelAdmin):
     list_filter = ('elective',)
     list_display = (
@@ -70,11 +77,15 @@ class SubjectAdmin(ModelAdmin):
 class SubjectTeacherAdmin(ModelAdmin):
     save_as = True
     list_filter = (
-        'year', 'batch__year__name', 'batch__programme__name', 'semester', 'subject_teacher__first_name', 'subject__name')
+        ('year', custom_titled_filter('Academic Year')), ('batch__year__name', custom_titled_filter('Batch Year')),
+        ('batch__programme__name', custom_titled_filter('Program Name')), 'semester',
+        ('subject_teacher__first_name', custom_titled_filter('Teachers First Name')),
+        ('subject__name', custom_titled_filter('Subject Name')))
     list_display = (
         'year', 'batch', 'semester', 'subject_teacher', 'subject')
     search_fields = (
-        'year', 'batch__year__name', 'batch__programme__name', 'semester', 'subject_teacher__first_name', 'subject__name')
+        'year', 'batch__year__name', 'batch__programme__name', 'semester', 'subject_teacher__first_name',
+        'subject__name')
 
     pass
 

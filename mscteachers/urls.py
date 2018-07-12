@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^.*export.*$', views.exportform),
     url(r'^.*dumpteachers.*$', views.exportteachers, name='dumpteachers'),
     url(r'^.*dumpexperts.*$', views.exportexperts, name='dumpexperts'),
+    url(r'^.*cloneyear.*$', views.cloneyear, name='dumpexperts'),
     url(r'^.*about.*$', TemplateView.as_view(template_name='admin/about.html'), name='aboutsystem'),
 
     path('', admin.site.urls),

@@ -7,7 +7,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from openpyxl import Workbook
 
-from .models import AssignSubjectTeacher, Teacher, Expert
+from college.forms import CloneForm
+from .models import AssignSubjectTeacher, Teacher, Expert, Year
 
 
 def generate_xlsx(request, assignsubjectteacherlist="none"):
@@ -231,3 +232,50 @@ def exportexperts(request):
     response['Content-Type'] = 'mimetype/submimetype'
     response['Content-Disposition'] = 'attachment; filename=ExpertsList.xlsx'
     return response
+
+
+def cloneyear(request):
+    log = None
+
+    if not request.user.is_superuser:
+        return HttpResponse('Sorry! You need to be authorized to access this link.'
+                            + "<a href='../'>" + 'Login here.' +
+                            "</a> <br> <br> <br> If you think this is a mistake contact WebAdmin.")
+
+    if request.method == "POST":
+
+        form = CloneForm(request.POST)
+
+        if form.is_valid():
+            # post = form.save(commit=False)
+            # post.author = request.user
+            # post.date_of_creation = datetime.now()
+            # post.save()
+
+            queryList = AssignSubjectTeacher.objects.all()
+
+            if form.cleaned_data['Academic_year_from'] is not None:
+                if form.cleaned_data['Academic_year_to'] is not None:
+                    fromyear = str(form.cleaned_data['Academic_year_from'])
+                    toyear = str(form.cleaned_data['Academic_year_to'])
+
+                    queryList = queryList.filter(year__name=fromyear)
+
+                    log = ""
+                    log += "Found " + str(queryList.count()) + ' data<br>'
+                    log += 'Cloning data from ' + fromyear + " to " + toyear + '. . . : <br><br>'
+                    for object in queryList:
+                        object.year = Year.objects.get(name=toyear)
+                        object.pk = None
+                        object.save()
+                        log += '- ' + object.subject_teacher.first_name + ', ' + object.subject.name + ', ' + object.batch.year.name + ', ' + object.batch.programme.name + ', ' + object.semester + "<br>"
+
+                    log += ' <br>Completed <br>'
+
+            return render(request, 'admin/yearclone.html', {'form': form, 'log': log})
+
+    else:
+
+        form = CloneForm()
+
+    return render(request, 'admin/yearclone.html', {'form': form, 'log': log})
