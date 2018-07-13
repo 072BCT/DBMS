@@ -35,8 +35,9 @@ class ExportForm(forms.ModelForm):
 class CloneForm(forms.ModelForm):
     Academic_year_from = forms.ModelChoiceField(queryset=Year.objects.all(), required=True)
     Semester_type = forms.ChoiceField(choices={("", '----'), ('Even', 'Even'), ('Odd', 'Odd')}, required=False)
+    programme = forms.ModelChoiceField(queryset=Programme.objects.all(), required=False)
     Academic_year_to = forms.ModelChoiceField(queryset=Year.objects.all(), required=False)
 
     class Meta:
         model = AssignSubjectTeacher
-        fields = ('Academic_year_from', 'Academic_year_to', 'Semester_type',)
+        fields = ('Academic_year_from', 'Academic_year_to', 'programme', 'Semester_type',)

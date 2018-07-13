@@ -267,6 +267,10 @@ def cloneyear(request):
                         elif form.cleaned_data['Semester_type'] == 'Even':
                             queryList = queryList.filter(semester__in=['Second', 'Fourth'])
 
+                    if form.cleaned_data['programme'] is not None:
+                        queryList = queryList.filter(
+                            batch__programme=form.cleaned_data['programme'])
+
                     log = ""
                     log += "Found " + str(queryList.count()) + ' data<br>'
                     log += 'Cloning data from ' + fromyear + " to " + toyear + '. . . : <br><br>'

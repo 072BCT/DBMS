@@ -117,7 +117,7 @@ class AssignSubjectTeacher(models.Model):
     semester = models.CharField(max_length=40, choices=Semester_Choices)
     subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    subject_teacher_teaching_experience_years = models.IntegerField(max_length=4, blank=True, default=0)
+    subject_teacher_teaching_experience_years = models.IntegerField(blank=True, default=0)
 
     def programme(self):
         return self.batch.programme.name
