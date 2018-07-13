@@ -28,14 +28,17 @@ class Year(models.Model):
 class Batch(models.Model):
     year = models.ForeignKey(Year, on_delete=models.CASCADE)
     programme = models.ForeignKey(Programme, on_delete=models.CASCADE)
-    number_of_students = models.IntegerField(default='48')
+    number_of_students = models.IntegerField(default='20')
+
+    class Meta:
+        unique_together = ("year", "programme")
 
     def __str__(self):
         return self.programme.name + ":" + self.year.name
 
 
 class Semester(models.Model):
-    semester_name = models.CharField(max_length=40, blank=True, null=True, unique=True )
+    semester_name = models.CharField(max_length=40, blank=True, null=True, unique=True, choices=Semester_Choices)
 
     def __str__(self):
         return self.semester_name
@@ -62,7 +65,7 @@ class HumanResource(models.Model):
 
 
 class AffiliatedInstitute(models.Model):
-    institute_name = models.CharField(max_length=50)
+    institute_name = models.CharField(max_length=50, unique=True)
     code = models.CharField(max_length=20)
     address = models.CharField(max_length=50, blank=True)
     office_phone = models.CharField(max_length=20, blank=True)
@@ -93,8 +96,8 @@ class Teacher(HumanResource):
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=40, blank=True, null=True)
-    elective = models.BooleanField(default=0)
+    name = models.CharField(max_length=40, blank=True, null=True, unique=True)
+    elective = models.BooleanField(default=False)
     subject_code = models.CharField(max_length=40, blank=True, default=" ")
     # program = models.ForeignKey(Programme, on_delete=models.CASCADE, null=True)
     # semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
@@ -118,6 +121,9 @@ class AssignSubjectTeacher(models.Model):
     subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     subject_teacher_teaching_experience_years = models.IntegerField(blank=True, default=0)
+
+    class Meta:
+        unique_together = ("year", "batch","subject", "subject_teacher", "semester" )
 
     def programme(self):
         return self.batch.programme.name
@@ -143,14 +149,14 @@ class AssignSubjectTeacher(models.Model):
 
 
 class Topic(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Expert(HumanResource):
-    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True)
+    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True, unique=True)
     topic = models.ManyToManyField(Topic)
 
     def get_known_topics(self):
