@@ -12,7 +12,7 @@ Position_Choices = {('Prof Dr.', 'Prof Dr'), ('Dr.', 'Dr'), ('Mr.', 'Mr'), ('Ms.
 
 
 class Programme(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True )
 
     def __str__(self):
         return self.name
@@ -35,7 +35,7 @@ class Batch(models.Model):
 
 
 class Semester(models.Model):
-    semester_name = models.CharField(max_length=40, blank=True, null=True)
+    semester_name = models.CharField(max_length=40, blank=True, null=True, unique=True )
 
     def __str__(self):
         return self.semester_name
@@ -117,7 +117,7 @@ class AssignSubjectTeacher(models.Model):
     semester = models.CharField(max_length=40, choices=Semester_Choices)
     subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    subject_teacher_teaching_experience_years = models.CharField(max_length=4, blank=True)
+    subject_teacher_teaching_experience_years = models.IntegerField(max_length=4, blank=True, default=0)
 
     def programme(self):
         return self.batch.programme.name

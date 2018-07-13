@@ -34,6 +34,7 @@
         <br>
         <form method="POST" class="post-form">{% csrf_token %}
             {{ form.as_p }}
+            <p> Leaver Semester type blank to cone all the semesters.</p>
             <button type="submit" class="save btn btn-default">Clone</button>
             <br><br>
             <p> Year Not found? <a href="/admin/college/year/add"> Add New Year </a></p>
