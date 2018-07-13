@@ -66,7 +66,7 @@ def generate_xlsx(request, assignsubjectteacherlist="none"):
 
     response = HttpResponse(open(output_path, 'rb').read())
     response['Content-Type'] = 'mimetype/submimetype'
-    response['Content-Disposition'] = 'attachment; filename=DownloadedEval.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=SubjectTeachers.xlsx'
     return response
 
 
