@@ -19,7 +19,7 @@ class Programme(models.Model):
 
 
 class Year(models.Model):
-    name = models.CharField(max_length=40, default=datetime.date.today().strftime("%Y"))
+    name = models.CharField(max_length=40, default=datetime.date.today().strftime("%Y"), unique=True )
 
     def __str__(self):
         return self.name
