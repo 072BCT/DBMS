@@ -156,7 +156,7 @@ class Topic(models.Model):
 
 
 class Expert(HumanResource):
-    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True, unique=True)
+    organization = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True)
     topic = models.ManyToManyField(Topic)
 
     def get_known_topics(self):
