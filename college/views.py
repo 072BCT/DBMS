@@ -8,7 +8,7 @@ from django.shortcuts import render
 from openpyxl import Workbook
 
 from college.forms import CloneForm
-from .models import AssignSubjectTeacher, Teacher, Expert, Year
+from .models import AssignSubjectTeacher, Teacher, Expert, Year, Batch, Programme
 
 
 def generate_xlsx(request, assignsubjectteacherlist="none"):
@@ -261,11 +261,40 @@ def cloneyear(request):
 
                     queryList = queryList.filter(year__name=fromyear)
 
+                    if form.cleaned_data['Semester_type'] is not "":
+                        if form.cleaned_data['Semester_type'] == 'Odd':
+                            queryList = queryList.filter(semester__in=['First', 'Third'])
+                        elif form.cleaned_data['Semester_type'] == 'Even':
+                            queryList = queryList.filter(semester__in=['Second', 'Fourth'])
+
                     log = ""
                     log += "Found " + str(queryList.count()) + ' data<br>'
                     log += 'Cloning data from ' + fromyear + " to " + toyear + '. . . : <br><br>'
                     for object in queryList:
                         object.year = Year.objects.get(name=toyear)
+
+                        teachingyears = object.subject_teacher_teaching_experience_years
+
+                        if teachingyears == "":
+                            teachingyears = 0
+
+                        newteachingyears = int(teachingyears) + int(toyear) - int(fromyear)
+                        if newteachingyears <= 0:
+                            newteachingyears = 0
+
+                        newbatchyear = str(int(object.batch.year.name) + int(toyear) - int(fromyear))
+
+                        Year.objects.get_or_create(name=newbatchyear)
+
+                        Batch.objects.get_or_create(year=Year.objects.get(name=newbatchyear),
+                                                    programme=Programme.objects.get(
+                                                        pk=object.batch.programme.pk))
+
+                        object.batch = Batch.objects.get(year=Year.objects.get(name=newbatchyear),
+                                                         programme=Programme.objects.get(
+                                                             pk=object.batch.programme.pk))
+
+                        object.subject_teacher_teaching_experience_years = str(newteachingyears)
                         object.pk = None
                         object.save()
                         log += '- ' + object.subject_teacher.first_name + ', ' + object.subject.name + ', ' + object.batch.year.name + ', ' + object.batch.programme.name + ', ' + object.semester + "<br>"

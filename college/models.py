@@ -12,14 +12,14 @@ Position_Choices = {('Prof Dr.', 'Prof Dr'), ('Dr.', 'Dr'), ('Mr.', 'Mr'), ('Ms.
 
 
 class Programme(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True )
 
     def __str__(self):
         return self.name
 
 
 class Year(models.Model):
-    name = models.CharField(max_length=40, default=datetime.date.today().strftime("%Y"), unique=True )
+    name = models.CharField(max_length=40, default=str(int(datetime.date.today().strftime("%Y")) + 57) , unique=True )
 
     def __str__(self):
         return self.name
@@ -35,7 +35,7 @@ class Batch(models.Model):
 
 
 class Semester(models.Model):
-    semester_name = models.CharField(max_length=40, blank=True, null=True)
+    semester_name = models.CharField(max_length=40, blank=True, null=True, unique=True )
 
     def __str__(self):
         return self.semester_name
@@ -77,7 +77,7 @@ class Teacher(HumanResource):
     # known_subjects = models.ManyToManyField('Subject', null=True)
     aff_type = models.CharField(max_length=30, choices=Affiliation_Choices, default='Permanent')
     affiliated_institute = models.ForeignKey('AffiliatedInstitute', on_delete=models.CASCADE, null=True)
-    started_teaching = models.CharField(max_length=4, default=datetime.date.today().strftime("%Y"), blank=True)
+    started_teaching = models.CharField(verbose_name="started teaching in BS",  max_length=4, default=str(int(datetime.date.today().strftime("%Y")) + 57), blank=True)
 
     def get_known_subjects(self):
         return ",\n".join([p.name for p in self.known_subjects.all()])
@@ -87,7 +87,7 @@ class Teacher(HumanResource):
 
     def get_teacher_experience_years(self):
         if self.started_teaching:
-            return int(datetime.date.today().strftime("%Y")) - int(self.started_teaching)
+            return int(str(int(datetime.date.today().strftime("%Y")) + 57)) - int(self.started_teaching)
         else:
             return ""
 
@@ -117,7 +117,7 @@ class AssignSubjectTeacher(models.Model):
     semester = models.CharField(max_length=40, choices=Semester_Choices)
     subject_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    subject_teacher_teaching_experience_years = models.CharField(max_length=4, blank=True)
+    subject_teacher_teaching_experience_years = models.IntegerField(max_length=4, blank=True, default=0)
 
     def programme(self):
         return self.batch.programme.name

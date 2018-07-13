@@ -30,13 +30,15 @@
     {% else %}
 
 
-        <p> This tool clones all the subject teachers assignment from a year to new one.</p>
-        <br>
+        <p> This tool clones all the subject teachers assignment from a year to same/new one. Batches/Year are automatically created as per need.</p>
+
         <form method="POST" class="post-form">{% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="save btn btn-default">Clone</button>
-            <br><br>
+                        <br>
             <p> Year Not found? <a href="/admin/college/year/add"> Add New Year </a></p>
+            {{ form.as_p }}
+            <p> Leaver Semester type blank to cone all the semesters.</p>
+            <button type="submit" class="save btn btn-default">Clone</button>
+
 
         </form>
 
