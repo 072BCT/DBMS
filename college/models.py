@@ -56,6 +56,7 @@ class HumanResource(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = ("first_name","last_name","mobile_phone", "upper_degree" )
 
     def full_name(self):
         return str(self.salutation + ' ' + self.first_name + ' ' + self.middle_name + ' ' + self.last_name)
@@ -74,6 +75,8 @@ class AffiliatedInstitute(models.Model):
     def __str__(self):
         return self.institute_name
 
+    class Meta:
+        verbose_name = "Organization / Affiliated Institutes"
 
 class Teacher(HumanResource):
     teacher_id = models.CharField(max_length=20, blank=True, null=False)
@@ -124,6 +127,7 @@ class AssignSubjectTeacher(models.Model):
 
     class Meta:
         unique_together = ("year", "batch","subject", "subject_teacher", "semester" )
+        verbose_name = "Subject Teacher Assignment"
 
     def programme(self):
         return self.batch.programme.name
