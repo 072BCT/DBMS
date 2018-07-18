@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'mscteachers',
+    'import_export',
     'debug_toolbar',
     'college.apps.AllConfig',
     'django.contrib.admin',
@@ -120,3 +121,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 INTERNAL_IPS = ('127.0.0.1',)
+
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, '../mscteachers/static')

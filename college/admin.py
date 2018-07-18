@@ -3,6 +3,7 @@ from django.contrib.admin import AdminSite, ModelAdmin
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.models import User, Group
 from django.utils.translation import gettext_lazy
+from import_export.admin import ImportExportModelAdmin
 
 from .models import *
 
@@ -36,7 +37,7 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
 
 
-class ExpertAdmin(ModelAdmin):
+class ExpertAdmin(ImportExportModelAdmin):
     list_display = (
         'full_name', 'mobile_phone', 'email', 'organization', 'upper_degree', 'get_topics')
     list_filter = ('organization__institute_name', 'upper_degree',)
@@ -52,11 +53,11 @@ class ExpertAdmin(ModelAdmin):
     pass
 
 
-class TopicAdmin(ModelAdmin):
+class TopicAdmin(ImportExportModelAdmin):
     pass
 
 
-class TeacherAdmin(ModelAdmin):
+class TeacherAdmin(ImportExportModelAdmin):
     list_filter = ('affiliated_institute__institute_name', 'upper_degree', 'aff_type')
     list_display = (
         'full_name', 'mobile_phone', 'email', 'affiliated_institute', 'upper_degree', 'aff_type',)
@@ -66,7 +67,7 @@ class TeacherAdmin(ModelAdmin):
         'upper_degree', 'aff_type')
 
 
-class SubjectAdmin(ModelAdmin):
+class SubjectAdmin(ImportExportModelAdmin):
     list_filter = ('elective',)
     list_display = (
         'name', 'internal_marks', 'elective')
@@ -90,7 +91,7 @@ class SubjectTeacherAdmin(ModelAdmin):
     pass
 
 
-class BatchAdmin(ModelAdmin):
+class BatchAdmin(ImportExportModelAdmin):
     save_as = True
     pass
 
@@ -101,6 +102,6 @@ admin.site.register(Expert, ExpertAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Batch, BatchAdmin)
-admin.site.register(Programme)
-admin.site.register(AffiliatedInstitute)
-admin.site.register(Year)
+admin.site.register(Programme, ImportExportModelAdmin)
+admin.site.register(AffiliatedInstitute, ImportExportModelAdmin)
+admin.site.register(Year, ImportExportModelAdmin)
