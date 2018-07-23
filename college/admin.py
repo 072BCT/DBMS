@@ -85,7 +85,7 @@ class SubjectTeacherAdmin(ModelAdmin):
     list_display = (
         'year', 'batch', 'semester', 'subject_teacher', 'subject')
     search_fields = (
-        'year', 'batch__year__name', 'batch__programme__name', 'semester', 'subject_teacher__first_name',
+        'year__name', 'batch__year__name', 'batch__programme__name', 'semester', 'subject_teacher__first_name',
         'subject__name')
 
     pass
