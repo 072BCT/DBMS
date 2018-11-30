@@ -1,0 +1,2 @@
+# MSCTeachersDBMSProject
+This Django project is for MSC Program Coordinators at DOECE, Pulchowk Campus. If you want to collaborate contact me at http://sushant.info.np. Aman sir is using this to maintain MSC teachers/ expert records. This generates a formatted excel form to be submitted to Exam Section Pangre Ghar by teachers. This also maintains experts list that is used by department to call externals for viva and guest lectures. Custom features like cloning records to new year has been added. 
